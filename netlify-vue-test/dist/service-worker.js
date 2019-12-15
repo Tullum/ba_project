@@ -14,7 +14,7 @@
 importScripts("https://storage.googleapis.com/workbox-cdn/releases/4.3.1/workbox-sw.js");
 
 importScripts(
-  "/precache-manifest.aa84f3a3876e1159d41a7416a8286577.js"
+  "/precache-manifest.03ac92334d5f5d38b4b758d226f7ef3e.js"
 );
 
 workbox.core.setCacheNameDetails({prefix: "netlify-vue-test"});
