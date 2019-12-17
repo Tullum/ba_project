@@ -5,7 +5,10 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width,initial-scale=1.0">
     <link rel="icon" href="<%= BASE_URL %>favicon.ico">
+    <link href='https://fonts.googleapis.com/css?family=Roboto:100,300,400,500,700,900|Material+Icons' rel="stylesheet">
     <title>netlify-vue-test</title>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:100,300,400,500,700,900">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@mdi/font@latest/css/materialdesignicons.min.css">
   </head>
   <body>
     <noscript>
@@ -13,5 +16,244 @@
     </noscript>
     <div id="app"></div>
     <!-- built files will be auto injected -->
+    <div id="table-app">
+      <v-app id="inspire">
+        <v-toolbar dark color="primary" fixed>
+          <v-toolbar-title class="white--text">Projects</v-toolbar-title>
+          <v-spacer></v-spacer>
+          <v-text-field v-model="search" append-icon="search" label="Search" single-line hide-details></v-text-field>
+          <v-menu offset-y :nudge-left="170" :close-on-content-click="false">
+              <v-btn icon slot="activator">
+                  <v-icon>more_vert</v-icon>
+                </v-btn>
+              <v-list>
+                <v-list-tile  v-for="(item, index) in headers"  :key="item.value"   @click="changeSort(item.value)">
+                  <v-list-tile-title>{{ item.text }}<v-icon v-if="pagination.sortBy === item.value">{{pagination.descending ? 'arrow_downward':'arrow_upward'}}</v-icon></v-list-tile-title>
+                </v-list-tile>
+              </v-list>
+            </v-menu>
+        </v-toolbar>
+            <v-layout v-resize="onResize" column style="padding-top:56px">
+              <v-data-table :headers="headers" :items="projects" :search="search" :pagination.sync="pagination" :hide-headers="isMobile" :class="{mobile: isMobile}">
+                <template slot="items" slot-scope="props">
+                  <tr v-if="!isMobile">
+                    <td>{{ props.item.name }}</td>
+                    <td class="text-xs-right">{{ props.item.time }}</td>
+                    <td class="text-xs-right">{{ props.item.status }}</td>
+                    <td class="text-xs-right">{{ props.item.client }}</td>
+                  </tr>
+                  <tr v-else>
+                    <td>
+                      <ul class="flex-content">
+                        <li class="flex-item" data-label="Project name">{{ props.item.name }}</li>
+                        <li class="flex-item" data-label="Time spent">{{ props.item.time }}</li>
+                        <li class="flex-item" data-label="Project status">{{ props.item.status  }}</li>
+                        <li class="flex-item" data-label="Client connection">{{ props.item.client }}</li>
+                      </ul>
+                    </td>
+                  </tr>
+                </template>
+                <v-alert slot="no-results" :value="true" color="error" icon="warning">
+                  Your search for "{{ search }}" found no results.
+                </v-alert>
+              </v-data-table>
+            </v-layout>
+      </v-app>
+  </div>
+  
+  <style>   .mobile {
+  color: #333;
+  }
+  
+  @media screen and (max-width: 768px) {
+  .mobile table.v-table tr {
+  max-width: 100%;
+  position: relative;
+  display: block;
+  }
+  
+  .mobile table.v-table tr:nth-child(odd) {
+  border-left: 6px solid deeppink;
+  }
+  
+  .mobile table.v-table tr:nth-child(even) {
+  border-left: 6px solid cyan;
+  }
+  
+  .mobile table.v-table tr td {
+  display: flex;
+  width: 100%;
+  border-bottom: 1px solid #f5f5f5;
+  height: auto;
+  padding: 10px;
+  }
+  
+  .mobile table.v-table tr td ul li:before {
+  content: attr(data-label);
+  padding-right: .5em;
+  text-align: left;
+  display: block;
+  color: #999;
+  
+  }
+  .v-datatable__actions__select
+  {
+  width: 50%;
+  margin: 0px;
+  justify-content: flex-start;
+  }
+  .mobile .theme--light.v-table tbody tr:hover:not(.v-datatable__expand-row) {
+  background: transparent;
+  }
+  
+  }
+  .flex-content {
+  padding: 0;
+  margin: 0;
+  list-style: none;
+  display: flex;
+  flex-wrap: wrap;
+  width: 100%;
+  }
+  
+  .flex-item {
+  padding: 5px;
+  width: 50%;
+  height: 40px;
+  font-weight: bold;
+  }
+  
+  </style>
+  
+  <script src="https://cdn.jsdelivr.net/npm/vue@2.x/dist/vue.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/vuetify@1.x/dist/vuetify.js"></script>
+  
+  <script>
+  new Vue({
+      name: "TableStructure",
+    el: '#table-app',
+    data: () => ({
+      pagination: {
+        sortBy: 'name'
+      },
+      selected: [],
+      search: '',
+      isMobile: false,
+      headers: [{
+          text: 'Projects',
+          align: 'left',
+          value: 'name'
+        },
+        {
+          text: 'Time spent',
+          value: 'time'
+        },
+        {
+          text: 'Project status',
+          value: 'status'
+        },
+        {
+          text: 'Client connection',
+          value: 'client'
+        }
+      ],
+      projects: [{
+          value: false,
+          name: "Stark",
+          time: "17 hours",
+          status: "Done",
+          client: "Bob Bobsen"
+        },
+        {
+          value: false,
+          name: "Føtex",
+          time: "10 hours",
+          status: "In progress",
+          client: "Mack Johnson"
+        },
+        {
+          value: false,
+          name: "Ucl",
+          time: "5 hours",
+          status: "Ready to start",
+          client: "Clark Bobsen"
+        },
+        {
+          value: false,
+          name: "OBBC",
+          time: "9 hours",
+          status: "In progress",
+          client: "Bob Jensen"
+        },
+        {
+          value: false,
+          name: "Netto",
+          time: "17 hours",
+          status: "Ready to start",
+          client: "Irma Bobsen"
+        },
+        {
+          value: false,
+          name: "Jem&Fix",
+          time: "2 hours",
+          status: "Done",
+          client: "Joey Tribbiany"
+        },
+        {
+          value: false,
+          name: "Javu",
+          time: "17 hours",
+          status: "In progress",
+          client: "Monica Geller"
+        },
+        {
+          value: false,
+          name: "Louis Vitton",
+          time: "7 hours",
+          status: "Done",
+          client: "Rachel Green"
+        },
+        {
+          value: false,
+          name: "Imerco",
+          time: "3 hours",
+          status: "Ready to start",
+          client: "Chandler Bing"
+        },
+        {
+          value: false,
+          name: "Brugsen",
+          time: "10 hours",
+          status: "In progress",
+          client: "Bodil Kjaer"
+        }
+      ]
+    }),
+  
+    methods: {
+      onResize() {
+        if (window.innerWidth < 769)
+          this.isMobile = true;
+        else
+          this.isMobile = false;
+      },
+      toggleAll() {
+        if (this.selected.length) this.selected = []
+        else this.selected = this.desserts.slice()
+      },
+      changeSort(column) {
+        console.log(column);
+        if (this.pagination.sortBy === column) {
+          this.pagination.descending = !this.pagination.descending
+        } else {
+          this.pagination.sortBy = column
+          this.pagination.descending = false
+        }
+      }
+    }
+  })
+  </script>
+
   </body>
 </html>
+
